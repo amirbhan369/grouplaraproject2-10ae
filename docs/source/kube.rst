@@ -1,7 +1,7 @@
-Scaling [--solutionname--] With Kubernetes
+Scaling [grouplaraproject2-10ae] With Kubernetes
 ===========================
 
-Generated On: --datetime-- UTC
+Generated On: 2024-11-28 19:18:36 UTC
 
 You can scale your solution with Kubernetes.  To do so, will will need to apply the following YAML files to your Kubernetes cluster.
 
@@ -13,13 +13,13 @@ You can scale your solution with Kubernetes.  To do so, will will need to apply 
 .. important:: 
    Below assumes you have a Kubernetes cluster and **kubectl** installed in your Linux environment.
 
-Based on your TML solution [--solutionname--] - if you want to scale your application with Kubernetes - you will need to apply the following YAML files.
+Based on your TML solution [grouplaraproject2-10ae] - if you want to scale your application with Kubernetes - you will need to apply the following YAML files.
 
 .. list-table::
 
    * - **YML File**
      - **Description**
-   * - :ref:`--solutionnamefile--`
+   * - :ref:`grouplaraproject2-10ae.yml`
      - This is your main solution YAML file.  
  
        It MUST be applied to your Kubernetes cluster.
@@ -52,20 +52,127 @@ kubectl apply command
 
 .. code-block:: YAML
 
-   --kubectl--
+   kubectl apply -f mysql-storage.yml -f mysql-db-deployment.yml -f qdrant.yml -f privategpt.yml -f grouplaraproject2-10ae.yml
 
---solutionnamefile--
+grouplaraproject2-10ae.yml
 ------------------------
 
 .. important::
-   Copy and Paste this YAML file: --solutionnamefile-- - and save it locally.
+   Copy and Paste this YAML file: grouplaraproject2-10ae.yml - and save it locally.
 
    Also, MAKE SURE to update any tokens and passwords in this file.
 
 .. code-block:: YAML
 
-   ################# --solutionnamefile--
-   --solutionnamecode--
+   ################# grouplaraproject2-10ae.yml
+   
+     apiVersion: apps/v1
+     kind: Deployment
+     metadata:
+       name: grouplaraproject2-10ae
+     spec:
+       selector:
+         matchLabels:
+           app: grouplaraproject2-10ae
+       replicas: 3 # tells deployment to run 1 pods matching the template
+       template:
+         metadata:
+           labels:
+             app: grouplaraproject2-10ae
+         spec:
+           containers:
+           - name: grouplaraproject2-10ae
+             image: dockeramir33/grouplaraproject2-10ae-amd64
+             volumeMounts:
+             - name: dockerpath
+               mountPath: /var/run/docker.sock
+             ports:
+             - containerPort: 8883
+             - containerPort: 39205
+             - containerPort: 33961
+             - containerPort: 54895
+             env:
+             - name: TSS
+               value: '0'
+             - name: SOLUTIONNAME
+               value: 'grouplaraproject2-10ae'
+             - name: SOLUTIONDAG
+               value: 'solution_preprocessing_ai_mqtt_dag-grouplaraproject2-10ae'
+             - name: GITUSERNAME
+               value: 'amirbhan369'
+             - name: GITREPOURL
+               value: 'https://github.com/amirbhan369/raspberrypi.git'
+             - name: SOLUTIONEXTERNALPORT
+               value: '54895'
+             - name: CHIP
+               value: 'amd64'
+             - name: SOLUTIONAIRFLOWPORT
+               value: '39205'
+             - name: SOLUTIONVIPERVIZPORT
+               value: '33961'
+             - name: DOCKERUSERNAME
+               value: 'dockeramir33'
+             - name: CLIENTPORT
+               value: '8883'
+             - name: EXTERNALPORT
+               value: '33565'
+             - name: KAFKACLOUDUSERNAME
+               value: ''
+             - name: VIPERVIZPORT
+               value: '9005'
+             - name: MQTTUSERNAME
+               value: 'amirhivemq'
+             - name: AIRFLOWPORT
+               value: '9000'
+             - name: GITPASSWORD
+               value: '<ENTER GITHUB PASSWORD>'
+             - name: KAFKACLOUDPASSWORD
+               value: '<Enter API secret>'
+             - name: MQTTPASSWORD
+               value: '<ENTER MQTT PASSWORD>'
+             - name: READTHEDOCS
+               value: '<ENTER READTHEDOCS TOKEN>'
+             - name: qip 
+               value: 'localhost' # This is private GPT IP              
+             - name: KUBE
+               value: '1'
+           volumes: 
+           - name: dockerpath
+             hostPath:
+               path: /var/run/docker.sock
+           dnsPolicy: "None"
+           dnsConfig:
+             nameservers:
+               - 8.8.8.8                
+               
+   ---
+     apiVersion: v1
+     kind: Service
+     metadata:
+       name: grouplaraproject2-10ae-service
+       labels:
+         app: grouplaraproject2-10ae-service
+     spec:
+       type: NodePort #Exposes the service as a node ports
+       ports:
+       - port: 8883
+         name: p1
+         protocol: TCP
+         targetPort: 8883
+       - port: 39205
+         name: p2
+         protocol: TCP
+         targetPort: 39205
+       - port: 33961
+         name: p3
+         protocol: TCP
+         targetPort: 33961
+       - port: 54895
+         name: p4
+         protocol: TCP
+         targetPort: 54895
+       selector:
+         app: grouplaraproject2-10ae
 
 mysql-storage.yml
 ------------------------
